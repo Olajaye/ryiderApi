@@ -5,10 +5,10 @@ import transporter from "../Config/nodemailer.js";
 
 
 const SaveCookiesFunction = (token)=>{
-  return res.cookie("token", token, {
+  res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     maxAge: 1 * 24 * 60 * 60 * 1000 
   })
 }
@@ -43,14 +43,13 @@ export const Register = async (req, res)=>{
 
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
 
+    //when deployed
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
       sameSite:  "none" ,
       maxAge: 1 * 24 * 60 * 60 * 1000 
     })
-
-    
 
     // sending welcome email
     const mailOptions = {
@@ -93,13 +92,7 @@ export const Login = async (req, res)=>{
 
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
 
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    //   maxAge: 1 * 24 * 60 * 60 * 1000 
-    // })
-
+    //when deployed 
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
@@ -118,8 +111,8 @@ export const Logout = async (req, res)=>{
   try {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      secure: true,
+      sameSite: "none",
     } )
 
     return res.json({success: true, message: "Logged Out "})
