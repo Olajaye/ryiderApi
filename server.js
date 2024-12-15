@@ -11,7 +11,7 @@ const port= process.env.PORT || 4000
 
 connectDB()
 
-const allowerdOrigins = ["http://localhost:3001", "http://localhost:3000", "https://ryider.vercel.app/"]
+const allowerdOrigins = ["http://localhost:3001", "http://localhost:3000", "https://ryider.vercel.app"]
 
 app.use(express.json())
 app.use(cookieParser());
